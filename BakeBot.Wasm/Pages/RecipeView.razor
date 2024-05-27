@@ -1,0 +1,62 @@
+@inject RecipeService RecipeService
+@page "/recipe/{RecipeId:guid}"
+
+<PageTitle>Recipe</PageTitle>
+
+@if (Recipe is not null)
+{
+	<h1>@Recipe.Name</h1>
+	<FluentStack HorizontalGap="5">
+		@foreach (var tag in Recipe.Tags)
+		{
+			<FluentBadge>@tag</FluentBadge>
+		}
+	</FluentStack>
+
+	<p>
+		Preparation time: @Recipe.PreparationTime<br/>
+		Cooking time: @Recipe.CookingTime<br/>
+		Total: @Recipe.TotalTime
+	</p>
+
+	<h2 class="h-margin-top">Ingredients</h2>
+	<FluentDataGrid Items="Recipe.Ingredients.AsQueryable()" TGridItem="Ingredient" GenerateHeader="GenerateHeaderOption.None">
+		<PropertyColumn Property="@(p => p.Quantity)" Width="1fr"/>
+		<PropertyColumn Property="@(p => p.Unit)" Width="2fr"/>
+		<PropertyColumn Property="@(p => p.Name)" Width="4fr"/>
+	</FluentDataGrid>
+
+	<h2 class="h-margin-top">Instructions</h2>
+	<FluentStack Orientation="Orientation.Vertical">
+		@foreach (var instruction in Recipe.Instructions)
+		{
+			<FluentCard>
+				@instruction
+			</FluentCard>
+		}
+	</FluentStack>
+
+	@if(string.IsNullOrEmpty(Recipe.Notes) is false)
+	{
+		<h2 class="h-margin-top">Notes</h2>
+		<p>
+			@Recipe.Notes
+		</p>
+	}
+}
+else
+{
+	<FluentSkeleton Style="margin-bottom: 10px;" Width="75px" Height="30px"></FluentSkeleton>
+	<FluentSkeleton Style="margin-top: 10px" Height="10px;"></FluentSkeleton>
+    <FluentSkeleton Style="margin-top: 10px" Height="10px;"></FluentSkeleton>
+}
+
+@code {
+	[Parameter] public Guid RecipeId { get; set; }
+	private Recipe? Recipe { get; set; }
+
+	protected override void OnInitialized()
+	{
+		Recipe = RecipeService.Recipes.SingleOrDefault(x => x.Id == RecipeId.ToString());
+	}
+}

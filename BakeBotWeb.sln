@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakeBot.Wasm", "BakeBot.Wasm\BakeBot.Wasm.csproj", "{79A326E9-1671-4EA6-A621-80BBF2522BB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakeBot.API", "BakeBot.API\BakeBot.API.csproj", "{F997570D-4D0D-4D4F-8012-EEDAC21136DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{79A326E9-1671-4EA6-A621-80BBF2522BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79A326E9-1671-4EA6-A621-80BBF2522BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79A326E9-1671-4EA6-A621-80BBF2522BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79A326E9-1671-4EA6-A621-80BBF2522BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F997570D-4D0D-4D4F-8012-EEDAC21136DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F997570D-4D0D-4D4F-8012-EEDAC21136DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F997570D-4D0D-4D4F-8012-EEDAC21136DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F997570D-4D0D-4D4F-8012-EEDAC21136DB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6B26695F-CF57-4610-A625-8F26EDCB0D05}
+	EndGlobalSection
+EndGlobal
