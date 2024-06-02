@@ -1,4 +1,6 @@
-namespace BakeBot.Wasm;
+using BakeBot.Models;
+
+namespace BakeBot.Extensions;
 public static class TimeSpanExtensions
 {
 	public static TimeSpan? AddNullable(this TimeSpan? first, TimeSpan? second)
@@ -20,4 +22,9 @@ public static class TimeSpanExtensions
 			return TimeSpan.Zero;
 		}
 	}
+
+	public static TimeSpan TotalTime(this Recipe recipe)
+    {
+        return recipe.PreparationTime.AddNullable(recipe.CookingTime) ?? TimeSpan.Zero;
+    }
 }

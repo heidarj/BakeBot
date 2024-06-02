@@ -1,4 +1,5 @@
 @inject RecipeService RecipeService
+@inject ILogger<RecipeView> _logger
 @page "/recipe/{RecipeId:guid}"
 
 <PageTitle>Recipe</PageTitle>
@@ -16,22 +17,34 @@
 	<p>
 		Preparation time: @Recipe.PreparationTime<br/>
 		Cooking time: @Recipe.CookingTime<br/>
-		Total: @Recipe.TotalTime
+		Total: @Recipe.TotalTime()
 	</p>
 
 	<h2 class="h-margin-top">Ingredients</h2>
 	<FluentDataGrid Items="Recipe.Ingredients.AsQueryable()" TGridItem="Ingredient" GenerateHeader="GenerateHeaderOption.None">
-		<PropertyColumn Property="@(p => p.Quantity)" Width="1fr"/>
+		<PropertyColumn Property="@(p => (p.Quantity * ScaleFactor).ToString("0.##"))" Width="1fr" />
 		<PropertyColumn Property="@(p => p.Unit)" Width="2fr"/>
 		<PropertyColumn Property="@(p => p.Name)" Width="4fr"/>
 	</FluentDataGrid>
+
+	<FluentSlider Label="Scale the recipe" Min="0.25m" Max="4m" Step="0.25m" @bind-Value=ScaleFactor>
+		@foreach(var val in ScaleFactors)
+		{
+			<FluentSliderLabel Position="@val">x@(val)</FluentSliderLabel>
+		}
+	</FluentSlider>
 
 	<h2 class="h-margin-top">Instructions</h2>
 	<FluentStack Orientation="Orientation.Vertical">
 		@foreach (var instruction in Recipe.Instructions)
 		{
 			<FluentCard>
-				@instruction
+				<FluentStack VerticalAlignment="VerticalAlignment.Center">
+					<h3>
+						@instruction.Key
+					</h3>
+					@instruction.Value
+				</FluentStack>
 			</FluentCard>
 		}
 	</FluentStack>
@@ -53,10 +66,46 @@ else
 
 @code {
 	[Parameter] public Guid RecipeId { get; set; }
-	private Recipe? Recipe { get; set; }
+	private DetailedRecipe? Recipe { get; set; }
+	List<decimal> ScaleFactors { get; set; }
 
-	protected override void OnInitialized()
+	private decimal ScaleFactor { get; set; } = 1;
+
+	protected override async Task OnInitializedAsync()
 	{
-		Recipe = RecipeService.Recipes.SingleOrDefault(x => x.Id == RecipeId.ToString());
+		Recipe = await RecipeService.GetRecipeAsync(RecipeId.ToString());
+		_logger.LogInformation($"Got recipe: {1}", Recipe.Name);
+		ScaleFactors = GetValidScalingFactors(Recipe.Ingredients, 0.25m, 4m, 0.25m);
+		_logger.LogInformation($"Got scalefactors: {1}", ScaleFactors.Count);
+	}
+
+	public List<decimal> GetValidScalingFactors(ICollection<Ingredient> ingredients, decimal minFactor, decimal maxFactor, decimal step)
+	{
+		var factors = new List<decimal>();
+		for (decimal factor = minFactor; factor <= maxFactor; factor += step)
+		{
+			_logger.LogInformation($"Checking factor: {1}", factor);
+			if (IsScalingFactorValid(ingredients, factor))
+			{
+				factors.Add(factor);
+			}
+		}
+		return factors;
+	}
+
+	private bool IsScalingFactorValid(ICollection<Ingredient> ingredients, decimal factor)
+	{
+		foreach (var ingredient in ingredients)
+		{
+			if (ingredient.MustBeWholeNumber)
+			{
+				var scaledQuantity = ingredient.Quantity * factor;
+				if (scaledQuantity != Math.Floor(scaledQuantity))
+				{
+					return false; // Invalid scaling factor as it does not keep the whole number quantity
+				}
+			}
+		}
+		return true;
 	}
 }

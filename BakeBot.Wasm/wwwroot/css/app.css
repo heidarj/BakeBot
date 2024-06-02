@@ -194,3 +194,7 @@ a.plain-link {
 .h-margin-top {
 	margin-top: 1rem;
 }
+
+.stack-horizontal h1,h2,h3,h4 {
+    margin: 0;
+}
