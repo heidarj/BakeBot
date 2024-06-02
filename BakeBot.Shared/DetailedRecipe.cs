@@ -11,9 +11,13 @@ public class DetailedRecipe : Recipe
 
 public class Recipe
 {
-    public required string Id { get; set; } = Guid.NewGuid().ToString();
+    public string? Id { get; set; }
     public required string Name { get; set; }
     public TimeSpan? PreparationTime { get; set; }
     public TimeSpan? CookingTime { get; set; }
     public required ICollection<string> Tags { get; set; }
+    public DateTime ValidFrom { get; set; }
+    public DateTime ValidTo { get; set; }
+    public required string CreatedBy { get; set; }
+    public string? EditedBy { get; set; }
 }
